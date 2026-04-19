@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Resume {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  tenantId  String   @map("tenant_id") @db.Uuid
+  title     String   @db.VarChar(255)
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  versions  ResumeVersion[]
+
+  @@map("resumes")
+  @@index([userId], map: "idx_resume_user")
+  @@index([tenantId], map: "idx_resume_tenant")
+}
+
+model ResumeVersion {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  resumeId      String   @map("resume_id") @db.Uuid
+  versionNumber Int      @map("version_number")
+  resumeJson    Json     @map("resume_json")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  resume       Resume      @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  atsReports   AtsReport[]
+
+  @@map("resume_versions")
+  @@index([resumeId], map: "idx_resume_version")
+}
+
+model AtsReport {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  resumeId        String   @map("resume_id") @db.Uuid
+  versionId       String   @map("version_id") @db.Uuid
+  tenantId        String   @map("tenant_id") @db.Uuid
+  overallScore    Int      @map("overall_score")
+  sectionScores   Json     @map("section_scores")
+  keywordMatches  Json     @map("keyword_matches")
+  issues          Json
+  suggestions     Json
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  version         ResumeVersion @relation(fields: [versionId], references: [id], onDelete: Cascade)
+
+  @@map("ats_reports")
+  @@index([versionId], map: "idx_ats_report_version")
+  @@index([resumeId], map: "idx_ats_report_resume")
+  @@index([tenantId], map: "idx_ats_report_tenant")
+}
+
+
