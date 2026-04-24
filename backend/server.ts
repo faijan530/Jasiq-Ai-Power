@@ -3,7 +3,10 @@ import express from "express";
 import cors from "cors";
 import { resumeRouter } from "./modules/resume/controller/resume.controller";
 import { atsRouter } from "./modules/ats/controller/ats.controller";
+import { jdMatchRouter } from "./modules/jd-match/controller/jd-match.controller";
+import { authRouter } from "./modules/auth/controller/auth.controller";
 import { devAuthMiddleware } from "./middleware/devAuth";
+import { jwtAuthMiddleware } from "./modules/auth/middleware/auth.middleware";
 import { prisma } from "./lib/prisma";
 
 const app = express();
@@ -36,8 +39,16 @@ app.get("/health", (_req, res) => {
   res.json({ status: "ok", service: "jasiq-backend" });
 });
 
-app.use("/resume", resumeRouter);
-app.use("/ats", atsRouter);
+app.use("/auth", authRouter);
+
+// Apply JWT middleware to resume routes for proper user context
+app.use("/resume", jwtAuthMiddleware, resumeRouter);
+
+// Apply JWT middleware to ats routes for proper user context
+app.use("/ats", jwtAuthMiddleware, atsRouter);
+
+// Apply JWT middleware to jd-match routes for proper user context
+app.use("/jd-match", jwtAuthMiddleware, jdMatchRouter);
 
 const port = process.env.PORT ? Number(process.env.PORT) : 4000;
 

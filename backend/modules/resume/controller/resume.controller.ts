@@ -97,6 +97,26 @@ resumeRouter.get("/", async (req: AuthenticatedRequest, res: Response, next: Nex
   }
 });
 
+// Admin endpoint: List all resumes in tenant
+resumeRouter.get("/admin/all", async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+  try {
+    const context = buildContext(req);
+    const result = await resumeService.adminListAllResumes(context);
+    return successResponse(res, result);
+  } catch (error) {
+    console.error("Admin resume error", { error: error instanceof Error ? error.message : String(error) });
+
+    if (error instanceof ForbiddenError) {
+      return res.status(403).json({ success: false, message: error.message });
+    }
+    if (error instanceof UnauthorizedError) {
+      return res.status(401).json({ success: false, message: error.message });
+    }
+    if (respondIfDatabaseUnreachable(error, res)) return;
+    return next(error);
+  }
+});
+
 // AI Chat endpoint - MUST be before /:id route
 resumeRouter.post("/ai/chat", async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   try {

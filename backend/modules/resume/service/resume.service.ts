@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { v4 as uuidv4 } from "uuid";
 import { prisma as sharedPrisma } from "../../../lib/prisma";
-import { ResumeRepository } from "../repository/resume.repository";
+import { ResumeRepository, AdminResumeItem } from "../repository/resume.repository";
 import { ResumeVersionService } from "./resume-version.service";
 import { Resume } from "../domain/entities/resume.entity";
 import { ResumeValidator } from "../validators/resume.validator";
@@ -145,6 +145,40 @@ export class ResumeService {
       resumes.map(async (resume) => {
         const latest = await this.versionRepo.getLatest(resume.id);
         return ResumeMapper.toResponseDto(resume, latest ?? undefined);
+      })
+    );
+    return mapped;
+  }
+
+  // Admin method: list all resumes in tenant with user info
+  async adminListAllResumes(context: RequestContext) {
+    // Only ADMIN can access all resumes
+    if (!context.roles.includes("ADMIN")) {
+      throw new ForbiddenError("Only ADMIN can access all resumes");
+    }
+
+    const resumes = await this.resumeRepo.listAllByTenant(context.tenantId);
+    const mapped = await Promise.all(
+      resumes.map(async (resume) => {
+        const latest = await this.versionRepo.getLatest(resume.id);
+        return {
+          id: resume.id,
+          userId: resume.userId,
+          userEmail: resume.userEmail,
+          userName: resume.userName,
+          title: resume.title,
+          isActive: resume.isActive,
+          createdAt: resume.createdAt.toISOString(),
+          updatedAt: resume.updatedAt.toISOString(),
+          latestVersion: latest
+            ? {
+                id: latest.id,
+                versionNumber: latest.versionNumber,
+                resumeJson: latest.resumeJson,
+                createdAt: latest.createdAt.toISOString(),
+              }
+            : null,
+        };
       })
     );
     return mapped;

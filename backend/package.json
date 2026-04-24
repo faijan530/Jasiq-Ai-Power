@@ -7,20 +7,30 @@
     "dev": "ts-node-dev --respawn --transpile-only server.ts",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/server.js",
+    "lint": "eslint . --ext .ts",
+    "test": "jest",
+    "validate-migrations": "powershell -ExecutionPolicy Bypass -File ./scripts/validate-migrations.ps1",
+    "db:check": "npx prisma migrate status",
+    "db:fix-drift": "powershell -ExecutionPolicy Bypass -File ./scripts/fix-migration-drift.ps1",
     "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev --name init"
+    "prisma:migrate": "prisma migrate dev --name init",
+    "bootstrap:admin": "ts-node scripts/bootstrap-admin.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.12.0",
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.0",
     "express": "^4.19.0",
+    "jsonwebtoken": "^9.0.3",
     "openai": "^6.33.0",
     "uuid": "^13.0.0"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20.11.0",
     "prisma": "^5.22.0",
     "ts-node-dev": "^2.0.0",

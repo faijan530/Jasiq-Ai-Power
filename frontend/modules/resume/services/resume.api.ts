@@ -9,6 +9,7 @@ import type {
   UpdateResumeRequestDto,
 } from "../types/resume.dto";
 import { ResumeMapper } from "./resume.mapper";
+import { useAuthStore } from "../../auth/store/auth.store";
 
 export interface AIAnalysisResult {
   score: number;
@@ -25,6 +26,15 @@ const http = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+});
+
+// Request interceptor to attach JWT token (read directly from store for reliability)
+http.interceptors.request.use((config) => {
+  const token = useAuthStore.getState().token;
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
 const unwrap = async <T>(promise: Promise<{ data: ApiEnvelope<T> }>): Promise<ApiEnvelope<T>> => {

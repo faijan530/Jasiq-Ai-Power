@@ -15,7 +15,7 @@ export class AtsReportRepository {
           id, resume_id, version_id, tenant_id, 
           overall_score, section_scores, keyword_matches, 
           issues, suggestions, created_at, updated_at
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+        ) VALUES ($1::uuid, $2::uuid, $3::uuid, $4::uuid, $5, $6::jsonb, $7::jsonb, $8::jsonb, $9::jsonb, $10, $11)`,
         data.id,
         data.resumeId,
         data.versionId,
@@ -42,7 +42,7 @@ export class AtsReportRepository {
         overall_score, section_scores, keyword_matches,
         issues, suggestions, created_at, updated_at
        FROM ats_reports
-       WHERE id = $1`,
+       WHERE id = $1::uuid`,
       id
     );
 
@@ -60,7 +60,7 @@ export class AtsReportRepository {
         overall_score, section_scores, keyword_matches,
         issues, suggestions, created_at, updated_at
        FROM ats_reports
-       WHERE version_id = $1
+       WHERE version_id = $1::uuid
        ORDER BY created_at DESC
        LIMIT 1`,
       versionId
@@ -80,7 +80,7 @@ export class AtsReportRepository {
         overall_score, section_scores, keyword_matches,
         issues, suggestions, created_at, updated_at
        FROM ats_reports
-       WHERE resume_id = $1
+       WHERE resume_id = $1::uuid
        ORDER BY created_at DESC`,
       resumeId
     );
@@ -90,7 +90,7 @@ export class AtsReportRepository {
 
   async existsForVersion(versionId: string): Promise<boolean> {
     const rows: any[] = await this.prisma.$queryRawUnsafe(
-      `SELECT 1 FROM ats_reports WHERE version_id = $1 LIMIT 1`,
+      `SELECT 1 FROM ats_reports WHERE version_id = $1::uuid LIMIT 1`,
       versionId
     );
     return rows.length > 0;

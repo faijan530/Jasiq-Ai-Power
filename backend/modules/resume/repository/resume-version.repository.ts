@@ -16,7 +16,7 @@ export class ResumeVersionRepository {
     try {
       await this.prisma.$executeRawUnsafe(
         `INSERT INTO resume_versions (id, resume_id, version_number, resume_json, created_at)
-         VALUES ($1, $2, $3, $4::jsonb, $5)`,
+         VALUES ($1::uuid, $2::uuid, $3, $4::jsonb, $5)`,
         data.id,
         data.resumeId,
         data.versionNumber,
@@ -35,7 +35,7 @@ export class ResumeVersionRepository {
     const rows: any[] = await this.prisma.$queryRawUnsafe(
       `SELECT id, resume_id, version_number, resume_json, created_at
        FROM resume_versions
-       WHERE resume_id = $1
+       WHERE resume_id = $1::uuid
        ORDER BY version_number DESC`,
       resumeId
     );
@@ -55,7 +55,7 @@ export class ResumeVersionRepository {
     const rows: any[] = await this.prisma.$queryRawUnsafe(
       `SELECT id, resume_id, version_number, resume_json, created_at
        FROM resume_versions
-       WHERE resume_id = $1
+       WHERE resume_id = $1::uuid
        ORDER BY version_number DESC
        LIMIT 1`,
       resumeId
@@ -79,9 +79,33 @@ export class ResumeVersionRepository {
     const rows: any[] = await this.prisma.$queryRawUnsafe(
       `SELECT id, resume_id, version_number, resume_json, created_at
        FROM resume_versions
-       WHERE resume_id = $1 AND id = $2
+       WHERE resume_id = $1::uuid AND id = $2::uuid
        LIMIT 1`,
       resumeId,
+      versionId
+    );
+
+    const record = rows[0];
+    if (!record) {
+      return null;
+    }
+
+    return ResumeVersion.create({
+      id: record.id,
+      resumeId: record.resume_id,
+      versionNumber: record.version_number,
+      resumeJson: record.resume_json,
+      createdAt: record.created_at,
+    });
+  }
+
+  // Alias for JD match service compatibility
+  async findById(versionId: string): Promise<ResumeVersion | null> {
+    const rows: any[] = await this.prisma.$queryRawUnsafe(
+      `SELECT id, resume_id, version_number, resume_json, created_at
+       FROM resume_versions
+       WHERE id = $1::uuid
+       LIMIT 1`,
       versionId
     );
 

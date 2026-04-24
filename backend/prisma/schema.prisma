@@ -7,6 +7,29 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  STUDENT
+  ADMIN
+  PLACEMENT_OFFICER
+  RECRUITER
+}
+
+model User {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email     String   @unique @db.VarChar(255)
+  password  String   @db.VarChar(255)
+  name      String   @db.VarChar(255)
+  role      UserRole @default(STUDENT)
+  tenantId  String?  @map("tenant_id") @db.Uuid
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("users")
+  @@index([email], map: "idx_user_email")
+  @@index([tenantId], map: "idx_user_tenant")
+}
+
 model Resume {
   id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   userId    String   @map("user_id") @db.Uuid
@@ -56,6 +79,29 @@ model AtsReport {
   @@index([versionId], map: "idx_ats_report_version")
   @@index([resumeId], map: "idx_ats_report_resume")
   @@index([tenantId], map: "idx_ats_report_tenant")
+}
+
+model JdMatchReport {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  resumeId        String   @map("resume_id") @db.Uuid
+  versionId       String   @map("version_id") @db.Uuid
+  tenantId        String   @map("tenant_id") @db.Uuid
+  jobTitle        String?  @map("job_title") @db.VarChar(255)
+  jdText          String   @map("jd_text") @db.Text
+  overallMatch    Int      @map("overall_match")
+  skillsMatch     Json     @map("skills_match")
+  keywordMatch    Json     @map("keyword_match")
+  experienceMatch Json     @map("experience_match")
+  roleFitScore    Int      @map("role_fit_score")
+  suggestions     Json
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("jd_match_reports")
+  @@index([resumeId], map: "idx_jd_match_resume")
+  @@index([versionId], map: "idx_jd_match_version")
+  @@index([tenantId], map: "idx_jd_match_tenant")
+  @@index([createdAt], map: "idx_jd_match_created")
 }
 
 

@@ -17,11 +17,20 @@ export interface NormalizedResume {
 export class AtsNormalizerService {
   normalize(resume: ResumeVersion): NormalizedResume {
     // For now we operate on the textual representation of the resume JSON.
-    const rawText = typeof resume.contentText === "string" ? resume.contentText : JSON.stringify(resume.rawJson);
+    let rawText = "";
+    const resumeJson = resume.resumeJson;
+    
+    if (resumeJson) {
+      try {
+        rawText = JSON.stringify(resumeJson);
+      } catch {
+        rawText = "";
+      }
+    }
 
     const normalizedText = this.normalizeText(rawText);
     const tokens = this.tokenize(normalizedText);
-    const sections = this.detectSections(resume.rawJson);
+    const sections = this.detectSections(resumeJson);
 
     return {
       original: resume,
