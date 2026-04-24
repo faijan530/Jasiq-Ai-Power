@@ -10,7 +10,8 @@
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "ignoreDeprecations": "6.0"
+    "ignoreDeprecations": "6.0",
+    "typeRoots": ["./node_modules/@types", "../node_modules/@types"]
   },
   "include": ["server.ts", "modules/**/*", "middleware/**/*", "types/**/*", "lib/**/*"],
   "exclude": ["**/*.test.ts", "**/*.spec.ts", "**/tests/**/*", "node_modules"]
