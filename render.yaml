@@ -3,7 +3,7 @@ services:
   - type: web
     name: jasiq-backend
     runtime: node
-    buildCommand: cd backend && npm install && npm run build && npx prisma generate
+    buildCommand: cd backend && npm ci && npm run build && npx prisma generate
     startCommand: cd backend && npm start
     envVars:
       - key: NODE_ENV
