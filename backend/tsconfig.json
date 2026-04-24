@@ -8,9 +8,11 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "types": ["node", "express", "cors", "bcryptjs", "jsonwebtoken"]
   },
-  "include": ["server.ts", "modules/**/*", "middleware/**/*", "types/**/*", "lib/**/*"]
+  "include": ["server.ts", "modules/**/*", "middleware/**/*", "types/**/*", "lib/**/*"],
+  "exclude": ["**/*.test.ts", "**/*.spec.ts", "**/tests/**/*", "node_modules"]
 }
 
