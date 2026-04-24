@@ -29,8 +29,8 @@ export function devAuthMiddleware(req: Request, _res: Response, next: NextFuncti
   const rolesHeader = req.headers["x-dev-roles"];
   const roles =
     typeof rolesHeader === "string" && rolesHeader.length > 0
-      ? rolesHeader.split(",").map((r) => r.trim())
-      : (process.env.DEV_ROLES?.split(",").map((r) => r.trim()) ?? ["STUDENT"]);
+      ? rolesHeader.split(",").map((r: string) => r.trim())
+      : (process.env.DEV_ROLES?.split(",").map((r: string) => r.trim()) ?? ["STUDENT"]);
 
   req.user = { id, tenantId, roles };
   next();

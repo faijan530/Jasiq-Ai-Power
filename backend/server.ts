@@ -18,7 +18,7 @@ const allowedOrigins = [frontendOrigin, "http://localhost:5173", "http://localho
 
 app.use(
   cors({
-    origin: (origin, callback) => {
+    origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
@@ -35,7 +35,7 @@ app.use(express.json());
 // Dev-only: attach req.user so resume RBAC / tenant checks succeed until real auth is wired.
 app.use(devAuthMiddleware);
 
-app.get("/health", (_req, res) => {
+app.get("/health", (_req: express.Request, res: express.Response) => {
   res.json({ status: "ok", service: "jasiq-backend" });
 });
 
