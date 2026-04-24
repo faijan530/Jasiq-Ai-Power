@@ -132,12 +132,13 @@ export function AiChatPanel({ resumeJson, onResumeUpdate, onTitleUpdate, resumeI
       setMessage("");
     },
     onError: (error) => {
+      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
       setMessages((prev) => [
         ...prev,
         {
           id: Date.now().toString(),
           role: "assistant",
-          content: `❌ Sorry, I encountered an error: ${error.message}. Please try again.`,
+          content: `❌ Sorry, I encountered an error: ${errorMessage}. Please try again.`,
           timestamp: new Date(),
         },
       ]);
