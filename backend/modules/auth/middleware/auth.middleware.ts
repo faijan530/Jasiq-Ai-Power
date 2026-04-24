@@ -6,11 +6,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-this-in-pro
 const prisma = new PrismaClient();
 
 export interface AuthRequest extends Request {
-  user?: {
-    userId: string;
-    email: string;
-    role: UserRole;
-  };
+  user?: any;
 }
 
 // Extended request with full user for resume routes
