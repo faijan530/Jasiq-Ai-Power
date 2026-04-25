@@ -22,10 +22,6 @@ export function ResumeEditorPage({ currentUser }: { currentUser: CurrentUser }) 
 
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
 
-  // Debug logging
-  console.log("[ResumeEditorPage] resumeId:", resumeId);
-  console.log("[ResumeEditorPage] currentUser.tenantId:", currentUser.tenantId);
-
   const hydrateFromAPI = useResumeStore((s) => s.hydrateFromAPI);
   const resume = useResumeStore((s) => s.resume);
   const currentVersion = useResumeStore((s) => s.currentVersion);
@@ -35,14 +31,10 @@ export function ResumeEditorPage({ currentUser }: { currentUser: CurrentUser }) 
     enabled: !!resumeId,
     staleTime: 30000, // Cache for 30 seconds
     queryFn: async () => {
-      console.log("[ResumeEditorPage] Fetching resume:", resumeId);
       const envelope = await getResume(resumeId!);
       const data = envelope.data;
-      console.log("[ResumeEditorPage] Resume fetched:", data);
-      console.log("[ResumeEditorPage] Comparing tenantId - data:", data.tenantId, "user:", currentUser.tenantId);
       // Skip tenant check if user tenantId is missing or matches resume tenantId
       if (currentUser.tenantId && data.tenantId !== currentUser.tenantId) {
-        console.error("[ResumeEditorPage] Tenant mismatch - data:", data.tenantId, "user:", currentUser.tenantId);
         throw new Error("Tenant mismatch");
       }
       return data;
@@ -61,12 +53,10 @@ export function ResumeEditorPage({ currentUser }: { currentUser: CurrentUser }) 
 
   // Sync React Query data to Zustand store (no double fetching)
   useEffect(() => {
-    console.log("[ResumeEditorPage] useEffect - resumeQuery:", resumeQuery, "resumeId:", resumeId);
     if (!resumeId || !resumeQuery) return;
     
     // Use cached data from React Query instead of refetching
     const latestVersion = versionsQuery?.sort((a, b) => b.versionNumber - a.versionNumber)[0];
-    console.log("[ResumeEditorPage] Setting Zustand store with resume:", resumeQuery);
     useResumeStore.setState({
       resume: resumeQuery as any,
       currentVersion: latestVersion || null,
@@ -124,7 +114,6 @@ export function ResumeEditorPage({ currentUser }: { currentUser: CurrentUser }) 
 
   // Show loading while data is being fetched
   if (isResumeLoading || (!resumeQuery && !isError)) {
-    console.log("[ResumeEditorPage] Showing loading state");
     return (
       <div className="min-h-screen bg-slate-50 p-4">
         <div className="mx-auto max-w-7xl">
@@ -181,27 +170,21 @@ export function ResumeEditorPage({ currentUser }: { currentUser: CurrentUser }) 
   }
 
   const handleSave = async (payload: { title: string; resumeJson: CanonicalResumeJson }) => {
-    console.log("[ResumeEditorPage] handleSave called:", { title: payload.title, hasResumeJson: !!payload.resumeJson });
     if (!isStudent) {
-      console.error("[ResumeEditorPage] Save blocked: User is not STUDENT");
       return;
     }
     try {
       await updateMutation.mutateAsync(payload);
-      console.log("[ResumeEditorPage] Save mutation completed successfully");
-    } catch (error) {
-      console.error("[ResumeEditorPage] Save mutation FAILED:", error);
+    } catch {
+      // Error handled by mutation
     }
   };
 
   const effectiveResume: ResumeResponseDto | null = (resume as ResumeResponseDto | null) ?? resumeQuery ?? null;
   const versions: ResumeVersionDto[] = versionsQuery ?? [];
 
-  console.log("[ResumeEditorPage] effectiveResume:", effectiveResume, "resume from store:", resume, "resumeQuery:", resumeQuery);
-
   // Show loading if we don't have resume data yet
   if (!effectiveResume) {
-    console.log("[ResumeEditorPage] No effectiveResume, showing loading");
     return (
       <div className="h-screen flex flex-col items-center justify-center bg-gray-50">
         <div className="text-slate-600">Loading resume...</div>

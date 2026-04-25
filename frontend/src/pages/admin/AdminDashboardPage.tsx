@@ -77,9 +77,8 @@ export const AdminDashboardPage = () => {
           topStudents
         });
       }
-    } catch (err) {
+    } catch {
       setError("Failed to fetch dashboard data");
-      console.error(err);
     } finally {
       setLoading(false);
     }

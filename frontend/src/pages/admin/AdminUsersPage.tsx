@@ -27,9 +27,8 @@ export const AdminUsersPage = () => {
       if (response.success) {
         setAdmins(response.data);
       }
-    } catch (err) {
+    } catch {
       setError("Failed to fetch admin users");
-      console.error(err);
     } finally {
       setLoading(false);
     }

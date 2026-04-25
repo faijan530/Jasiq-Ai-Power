@@ -111,8 +111,7 @@ export function AssistantPanel({ resumeId, tips, score, onAction, aiData: extern
 
       setActiveAction({ type, loading: false, result });
       onAction?.(type);
-    } catch (error) {
-      console.error("AI action failed:", error);
+    } catch {
       setActiveAction({ 
         type, 
         loading: false, 

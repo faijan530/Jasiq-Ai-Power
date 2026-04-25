@@ -48,9 +48,8 @@ export const AdminStudentsPage = () => {
         
         setStudents(Array.from(userMap.values()));
       }
-    } catch (err) {
+    } catch {
       setError("Failed to fetch students");
-      console.error(err);
     } finally {
       setLoading(false);
     }

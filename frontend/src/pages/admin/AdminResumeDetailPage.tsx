@@ -52,9 +52,8 @@ export const AdminResumeDetailPage = () => {
       if (pdfResponse.success) {
         setPdfData(pdfResponse.data);
       }
-    } catch (err) {
+    } catch {
       setError("Failed to fetch resume data");
-      console.error(err);
     } finally {
       setLoading(false);
     }

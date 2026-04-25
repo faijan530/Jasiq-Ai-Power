@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuthStore } from "../../modules/auth/store/auth.store";
-import { FileText, Users, LogOut, Shield, BarChart3 } from "lucide-react";
+import { FileText, Users, LogOut, Shield, BarChart3, Menu } from "lucide-react";
+import { MobileAdminSidebar } from "../components/layout/MobileAdminSidebar";
 
 const adminMenu = [
   { name: "Dashboard", path: "/admin", icon: BarChart3, exact: true },
@@ -16,6 +18,7 @@ interface AdminLayoutProps {
 export const AdminLayout = ({ children }: AdminLayoutProps) => {
   const { user, logout } = useAuthStore();
   const location = useLocation();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -24,8 +27,8 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      {/* LEFT SIDEBAR - Blue gradient like StudentLayout */}
-      <div className="w-64 bg-gradient-to-b from-blue-700 to-blue-900 text-white flex flex-col">
+      {/* LEFT SIDEBAR - Desktop only */}
+      <div className="hidden lg:flex w-64 bg-gradient-to-b from-blue-700 to-blue-900 text-white flex-col">
         {/* LOGO */}
         <div className="p-5 text-xl font-bold tracking-wide">
           JASIQ
@@ -71,12 +74,35 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
         </div>
       </div>
 
+      {/* Mobile Sidebar */}
+      <MobileAdminSidebar isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
+
       {/* MAIN AREA */}
-      <div className="flex-1 flex flex-col">
-        <main className="flex-1 overflow-y-auto p-6">
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Mobile Topbar */}
+        <div className="lg:hidden bg-white px-4 py-3 flex items-center justify-between shadow-sm">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              className="p-2 hover:bg-gray-100 rounded-lg"
+            >
+              <Menu className="w-5 h-5 text-gray-600" />
+            </button>
+            <h1 className="text-lg font-semibold text-gray-800">Admin Panel</h1>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-600 hidden sm:block">{user?.name || "Admin"}</span>
+            <img
+              src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || "Admin")}&background=0D8ABC&color=fff&size=40`}
+              alt="Profile"
+              className="w-8 h-8 rounded-full"
+            />
+          </div>
+        </div>
+        <main className="flex-1 overflow-y-auto p-4 lg:p-6">
           {children}
         </main>
       </div>
     </div>
   );
-};
+}

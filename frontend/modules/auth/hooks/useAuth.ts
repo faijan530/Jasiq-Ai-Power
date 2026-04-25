@@ -28,15 +28,11 @@ export const useAuth = () => {
 
   const signup = useCallback(async (data: SignupRequest) => {
     try {
-      console.log("[useAuth] Signing up with:", data);
       const response = await register(data);
-      console.log("[useAuth] Signup success:", response);
       setAuth(response);
       redirectBasedOnRole(response.user.role);
       return { success: true };
     } catch (error: any) {
-      console.error("[useAuth] Signup error:", error);
-      console.error("[useAuth] Error response:", error.response?.data);
       return {
         success: false,
         error: error.response?.data?.message || error.message || "Registration failed",

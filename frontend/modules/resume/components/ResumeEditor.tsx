@@ -288,7 +288,6 @@ export function ResumeEditor({
         alert('Failed to generate PDF. Please try again.');
       }
     } catch (err: any) {
-      console.error('Failed to generate PDF:', err);
       alert(`Failed to generate PDF: ${err?.message || 'Unknown error'}`);
     }
   };
@@ -330,9 +329,8 @@ export function ResumeEditor({
         try {
           const response = await analyzeResumeWithAI(resume.id);
           setAiData(response.data);
-          console.log("[ResumeEditor] AI analysis complete:", response.data);
-        } catch (error) {
-          console.error("[ResumeEditor] AI analysis failed:", error);
+        } catch {
+          // Error handled silently
         } finally {
           setIsAnalyzing(false);
         }

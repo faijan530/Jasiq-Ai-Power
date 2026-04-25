@@ -126,7 +126,6 @@ export function AiChatPanel({ resumeJson, onResumeUpdate, onTitleUpdate, resumeI
       }
       // If AI updated the title, apply it
       if (response.data.updatedTitle && onTitleUpdate) {
-        console.log("[AiChatPanel] Title updated:", response.data.updatedTitle);
         onTitleUpdate(response.data.updatedTitle);
         setMessages((prev) => [
           ...prev,

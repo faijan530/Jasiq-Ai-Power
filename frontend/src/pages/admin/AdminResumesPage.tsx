@@ -23,9 +23,8 @@ export const AdminResumesPage = () => {
       if (response.success) {
         setResumes(response.data);
       }
-    } catch (err) {
+    } catch {
       setError("Failed to fetch resumes");
-      console.error(err);
     } finally {
       setLoading(false);
     }

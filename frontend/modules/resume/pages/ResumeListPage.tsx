@@ -103,7 +103,6 @@ export function ResumeListPage({ currentUser }: { currentUser: CurrentUser }) {
       logEvent("resume_created", { resumeId: res.resumeId, source: "list_create" });
       navigate(`/app/resume/${res.resumeId}/edit`);
     } catch (e) {
-      console.error("Failed to create resume", e);
       setCreateError(e instanceof Error ? e.message : "Failed to create resume");
     }
   };
@@ -571,7 +570,6 @@ export function ResumeListPage({ currentUser }: { currentUser: CurrentUser }) {
                               alert('Failed to generate resume. Please try again.');
                             }
                           } catch (err: any) {
-                            console.error('Failed to generate PDF:', err);
                             alert(`Failed to generate PDF: ${err?.message || 'Unknown error'}`);
                           }
                         }}

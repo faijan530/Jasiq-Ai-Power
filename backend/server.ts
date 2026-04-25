@@ -19,7 +19,8 @@ const allowedOrigins = [frontendOrigin, "http://localhost:5173", "http://localho
 app.use(
   cors({
     origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-      if (!origin || allowedOrigins.includes(origin)) {
+      // Allow all origins in production (Render), localhost for dev
+      if (!origin || allowedOrigins.includes(origin) || origin.includes('onrender.com')) {
         callback(null, true);
       } else {
         callback(new Error("Not allowed by CORS"));
