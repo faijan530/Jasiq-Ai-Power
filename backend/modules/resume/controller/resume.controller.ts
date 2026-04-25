@@ -127,7 +127,7 @@ resumeRouter.post("/ai/chat", async (req: AuthenticatedRequest, res: Response, n
     }
 
     const chatResponse = await aiService.chatWithAI(message, resumeJson as any, currentTitle);
-    return successResponse(res, chatResponse);
+    return res.json(chatResponse);
   } catch (error) {
     console.error("AI chat error", { error: error instanceof Error ? error.message : String(error) });
     return res.status(500).json({ success: false, message: "AI chat failed" });

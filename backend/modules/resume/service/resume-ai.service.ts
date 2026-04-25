@@ -188,10 +188,13 @@ ${education.map((edu) => `- ${edu.degree} from ${edu.institution} (${edu.startYe
     message: string,
     resumeJson: CanonicalResumeJson,
     currentTitle?: string
-  ): Promise<{ message: string; updatedJson?: CanonicalResumeJson; updatedTitle?: string }> {
+  ): Promise<{ success: boolean; data: { message: string; updatedJson?: CanonicalResumeJson; updatedTitle?: string } }> {
     if (!this.hasApiKey()) {
       return {
-        message: "I'm a demo AI assistant. In production mode, I would help you build and optimize your resume based on your requests.",
+        success: true,
+        data: {
+          message: "I'm a demo AI assistant. In production mode, I would help you build and optimize your resume based on your requests.",
+        }
       };
     }
 
@@ -250,7 +253,7 @@ ${resumeText}`,
 
       const content = response.choices[0]?.message?.content;
       if (!content) {
-        return { message: "I didn't receive a response. Please try again." };
+        return { success: true, data: { message: "I didn't receive a response. Please try again." } };
       }
 
       // Try to parse JSON response
@@ -262,8 +265,11 @@ ${resumeText}`,
           // Handle title-only update (no resume JSON changes)
           if (parsed.action === "update" && parsed.updatedTitle && !parsed.updates) {
             return {
-              message: parsed.message || `Resume title updated to: "${parsed.updatedTitle}"`,
-              updatedTitle: parsed.updatedTitle,
+              success: true,
+              data: {
+                message: parsed.message || `Resume title updated to: "${parsed.updatedTitle}"`,
+                updatedTitle: parsed.updatedTitle,
+              }
             };
           }
 
@@ -295,23 +301,27 @@ ${resumeText}`,
             };
 
             return {
-              message: parsed.message || "I've updated your resume!",
-              updatedJson,
-              updatedTitle: parsed.updatedTitle,
+              success: true,
+              data: {
+                message: parsed.message || "I've updated your resume!",
+                updatedJson,
+                updatedTitle: parsed.updatedTitle,
+              }
             };
           }
 
-          return { message: parsed.message || "Here's what I found:" };
+          return { success: true, data: { message: parsed.message || "Here's what I found:" } };
         }
       } catch {
         // Not JSON, return as plain message
       }
 
-      return { message: content };
+      return { success: true, data: { message: content } };
     } catch (error) {
       console.error("[ResumeAIService] Chat error:", error);
       return {
-        message: "Sorry, I encountered an error. Please try again.",
+        success: true,
+        data: { message: "Sorry, I encountered an error. Please try again." }
       };
     }
   }
