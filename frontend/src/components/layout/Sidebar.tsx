@@ -20,7 +20,7 @@ export const Sidebar = () => {
   };
 
   return (
-    <div className="w-64 bg-gradient-to-b from-blue-700 to-blue-900 text-white flex flex-col">
+    <div className="w-64 h-full bg-gradient-to-b from-blue-700 to-blue-900 text-white flex flex-col">
       {/* LOGO */}
       <div className="p-5 text-xl font-bold tracking-wide">
         JASIQ
