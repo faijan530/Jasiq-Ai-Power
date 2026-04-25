@@ -3,6 +3,16 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import type { CanonicalResumeJson } from "../types/resume.dto";
 
+const apiBaseUrl = import.meta.env?.VITE_API_BASE_URL ? String(import.meta.env.VITE_API_BASE_URL) : "";
+
+const http = axios.create({
+  baseURL: apiBaseUrl,
+  withCredentials: true,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
 interface ChatMessage {
   id: string;
   role: "user" | "assistant";
@@ -72,7 +82,7 @@ export function AiChatPanel({ resumeJson, onResumeUpdate, onTitleUpdate, resumeI
 
   const { mutate: sendMessage, isPending } = useMutation<AiChatResponse, Error, string>({
     mutationFn: async (userMessage: string) => {
-      const res = await axios.post("/resume/ai/chat", {
+      const res = await http.post("/resume/ai/chat", {
         message: userMessage,
         resumeJson,
         resumeId,
