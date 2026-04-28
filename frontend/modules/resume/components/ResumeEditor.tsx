@@ -19,6 +19,8 @@ import { ResumeEditorHeader } from "./ResumeEditorHeader";
 import { AssistantPanel } from "./AssistantPanel";
 import { AiChatPanel } from "./AiChatPanel";
 import { QuickActions } from "./QuickActions";
+import { KeywordAssistant } from "./KeywordAssistant";
+import { TemplateSelector } from "./TemplateSelector";
 import { analyzeResumeWithAI, type AIAnalysisResult, renderResumePdf } from "../services/resume.api";
 import html2pdf from "html2pdf.js";
 import { useAiResumeBuilder } from "../hooks/useAiResumeBuilder";
@@ -157,6 +159,14 @@ export function ResumeEditor({
     ]);
   };
 
+  // Keyword Assistant: Add Keyword
+  const handleAddKeyword = (keyword: string) => {
+    const currentSkills = resumeJson.skills || [];
+    if (!currentSkills.some((s: { name: string }) => s.name.toLowerCase() === keyword.toLowerCase())) {
+      updateField('skills', [...currentSkills, { name: keyword, level: 'intermediate' }]);
+    }
+  };
+
   // Quick Action: Add Experience
   const handleAddExperience = () => {
     const currentExperience = resumeJson.experience || [];
@@ -242,6 +252,8 @@ export function ResumeEditor({
     setLastSavedAt(new Date());
   };
 
+  const selectedTemplate = useResumeStore((s) => s.selectedTemplate);
+
   // Handle PDF export
   const handleExportPdf = async () => {
     if (!resume?.id) {
@@ -250,7 +262,7 @@ export function ResumeEditor({
     }
     
     try {
-      const result = await renderResumePdf(resume.id);
+      const result = await renderResumePdf(resume.id, selectedTemplate);
       const responseData = result.data;
       
       if (responseData?.html) {
@@ -417,16 +429,16 @@ export function ResumeEditor({
   };
 
   return (
-    <div className="min-h-screen bg-slate-50/50">
+    <div className="min-h-screen bg-[#F3F2EF]">
       {/* SaaS DASHBOARD HEADER */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-30">
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-30">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Left: Back Button + Title */}
             <div className="flex items-center gap-4">
               <button
                 onClick={() => navigate('/app/resume')}
-                className="flex items-center gap-2 px-3 py-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+                className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
                 title="Back to resume list"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -434,12 +446,12 @@ export function ResumeEditor({
                 </svg>
                 <span className="text-sm font-medium hidden sm:inline">Back</span>
               </button>
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-sm">
-                <span className="text-white text-lg font-bold">R</span>
+              <div className="w-10 h-10 bg-[#e8f3ff] rounded-xl flex items-center justify-center shadow-sm">
+                <span className="text-[#1a56db] text-lg font-bold">R</span>
               </div>
               <div>
-                <h1 className="text-lg font-semibold text-slate-900">Resume Builder</h1>
-                <p className="text-xs text-slate-500">Professional SaaS Dashboard</p>
+                <h1 className="text-[18px] font-bold text-gray-900">Resume Builder</h1>
+                <p className="text-[13px] font-medium text-gray-500">Professional Profile</p>
               </div>
             </div>
 
@@ -448,10 +460,10 @@ export function ResumeEditor({
               onClick={handleGenerateFullResume}
               disabled={isGenerating}
               className={[
-                "hidden md:flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl font-medium shadow-sm transition-all duration-200",
+                "hidden md:flex items-center gap-2 px-6 py-2 bg-white text-[#1a56db] border-2 border-[#1a56db] rounded-xl font-bold shadow-sm transition-all",
                 isGenerating
                   ? "opacity-70 cursor-not-allowed"
-                  : "hover:shadow-md hover:scale-[1.02] hover:from-purple-700 hover:to-indigo-700"
+                  : "hover:bg-[#1a56db] hover:text-white"
               ].join(" ")}
             >
               {isGenerating ? (
@@ -467,7 +479,7 @@ export function ResumeEditor({
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
-                  <span>AI Build Resume</span>
+                  <span>AI Build</span>
                 </>
               )}
             </button>
@@ -489,9 +501,9 @@ export function ResumeEditor({
       <main className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="grid grid-cols-12 gap-6">
           {/* LEFT SIDEBAR - 3 columns */}
-          <aside className="col-span-12 lg:col-span-3 space-y-4">
+          <aside className="col-span-12 lg:col-span-3 space-y-5">
             {/* Section Navigation Card */}
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 transition-all hover:shadow-md">
               <h2 className="text-sm font-semibold text-slate-900 mb-4 flex items-center gap-2">
                 <svg className="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -511,8 +523,8 @@ export function ResumeEditor({
               onClick={handleGenerateFullResume}
               disabled={isGenerating}
               className={[
-                "md:hidden w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl font-medium shadow-sm transition-all duration-200",
-                isGenerating ? "opacity-70 cursor-not-allowed" : "hover:shadow-md"
+                "md:hidden w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#0a66c2] text-white rounded-full font-semibold transition-colors",
+                isGenerating ? "opacity-70 cursor-not-allowed" : "hover:bg-[#004182]"
               ].join(" ")}
             >
               {isGenerating ? (
@@ -528,13 +540,13 @@ export function ResumeEditor({
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
-                  <span>AI Build Resume</span>
+                  <span>AI Build</span>
                 </>
               )}
             </button>
 
             {/* PDF Preview Card */}
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 transition-all hover:shadow-md">
               <PdfPreviewCard pdfUrl={pdfUrl} />
             </div>
 
@@ -551,7 +563,7 @@ export function ResumeEditor({
           </aside>
 
           {/* CENTER CONTENT - 6 columns */}
-          <section className="col-span-12 lg:col-span-6 space-y-6">
+          <section className="col-span-12 lg:col-span-6 space-y-5">
             {/* NEW: Resume Editor Header with Avatar, Title, Actions */}
             <ResumeEditorHeader
               resumeJson={resumeJson}
@@ -567,22 +579,22 @@ export function ResumeEditor({
 
             {/* AI Status Messages */}
             {isGenerating && (
-              <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-xl p-4 flex items-center gap-4">
-                <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                  <svg className="w-5 h-5 text-purple-600 animate-spin" fill="none" viewBox="0 0 24 24">
+              <div className="bg-white border border-[#0a66c2] rounded-lg p-4 flex items-center gap-4 shadow-sm">
+                <div className="w-10 h-10 bg-[#e8f3ff] rounded-full flex items-center justify-center">
+                  <svg className="w-5 h-5 text-[#0a66c2] animate-spin" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-purple-900">AI is building your resume...</p>
-                  <p className="text-xs text-purple-600">Generating professional content based on your profile</p>
+                  <p className="text-sm font-semibold text-gray-900">AI is building your resume...</p>
+                  <p className="text-xs text-gray-600">Generating professional content based on your profile</p>
                 </div>
               </div>
             )}
 
             {aiError && (
-              <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-start justify-between">
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start justify-between">
                 <div className="flex items-start gap-3">
                   <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
                     <svg className="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -604,7 +616,7 @@ export function ResumeEditor({
             )}
 
             {/* Resume Header Card */}
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden transition-all hover:shadow-md">
               <ResumeHeader
                 resumeJson={resumeJson}
                 resumeTitle={resumeTitle}
@@ -615,7 +627,7 @@ export function ResumeEditor({
             </div>
 
             {/* Editor Card */}
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-7 transition-all hover:shadow-md">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-lg font-semibold text-slate-900">
                   {sections.find(s => s.key === activeSection)?.label}
@@ -654,39 +666,43 @@ export function ResumeEditor({
           </section>
 
           {/* RIGHT PANEL - 3 columns */}
-          <aside className="col-span-12 lg:col-span-3 space-y-4">
-            {/* 1. AI Chat Panel Card */}
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-              <div className="px-4 py-3 border-b border-slate-100 bg-gradient-to-r from-purple-50 to-indigo-50">
-                <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
-                  <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <aside className="col-span-12 lg:col-span-3 space-y-5 sticky top-24 h-max">
+            
+            {/* 1. AI Assistant Panel (Combined) */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden transition-all hover:shadow-md">
+              <div className="px-4 py-3 border-b border-gray-100 bg-white">
+                <h3 className="text-[15px] font-bold text-gray-900 flex items-center gap-2">
+                  <svg className="w-5 h-5 text-[#1a56db]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
                   AI Assistant
                 </h3>
               </div>
-              <div className="p-4">
-                <AiChatPanel
-                  resumeJson={resumeJson}
-                  onResumeUpdate={handleResumeUpdateFromChat}
-                  onTitleUpdate={setResumeTitle}
-                  resumeId={resume?.id}
-                  currentTitle={resumeTitle}
-                />
-              </div>
-            </div>
+              
+              <div className="p-4 space-y-4">
+                {/* Status */}
+                <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 flex items-center justify-between">
+                  <span className="text-[13px] font-bold text-gray-700">Resume Status</span>
+                  <span className={`text-[12px] font-bold px-2.5 py-1 rounded-md ${
+                    (aiData?.score ?? readinessScore) >= 80 ? 'bg-green-100 text-green-700' : 
+                    (aiData?.score ?? readinessScore) >= 50 ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'
+                  }`}>
+                    {(aiData?.score ?? readinessScore) >= 80 ? 'Good' : 'Needs Work'}
+                  </span>
+                </div>
 
-            {/* 2. Quick Actions Card */}
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-              <div className="px-4 py-3 border-b border-slate-100 bg-slate-50">
-                <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
-                  <svg className="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                  Quick Actions
-                </h3>
-              </div>
-              <div className="p-4">
+                {/* AI Chat (Restored) */}
+                <div className="bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm">
+                  <AiChatPanel
+                    resumeJson={resumeJson}
+                    onResumeUpdate={handleResumeUpdateFromChat}
+                    onTitleUpdate={setResumeTitle}
+                    resumeId={resume?.id}
+                    currentTitle={resumeTitle}
+                  />
+                </div>
+
+                {/* Quick Actions */}
                 <QuickActions
                   onAddProject={handleAddProject}
                   onAddExperience={handleAddExperience}
@@ -694,73 +710,43 @@ export function ResumeEditor({
                   onSuggestSkills={handleSuggestSkills}
                   onAiImprove={handleGenerateFullResume}
                 />
+
+                {/* Strengths & Improvements */}
+                {(aiData?.strengths?.length || aiData?.weaknesses?.length) ? (
+                  <div className="space-y-3">
+                    {aiData?.strengths && aiData.strengths.length > 0 && (
+                      <div className="bg-green-50 rounded-lg p-3 border border-green-100">
+                        <p className="text-[11px] font-bold uppercase tracking-wider text-green-700 mb-2">Strengths</p>
+                        <ul className="space-y-1">
+                          {aiData.strengths.slice(0, 2).map((s, idx) => (
+                            <li key={idx} className="text-[12px] text-green-700 font-medium leading-tight">• {s}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    {aiData?.weaknesses && aiData.weaknesses.length > 0 && (
+                      <div className="bg-amber-50 rounded-lg p-3 border border-amber-100">
+                        <p className="text-[11px] font-bold uppercase tracking-wider text-amber-700 mb-2">Improvements</p>
+                        <ul className="space-y-1">
+                          {aiData.weaknesses.slice(0, 2).map((w, idx) => (
+                            <li key={idx} className="text-[12px] text-amber-700 font-medium leading-tight">• {w}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                ) : null}
               </div>
             </div>
 
-            {/* 3. Analysis Card (Strengths + Improvements) */}
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-              <div className="px-4 py-3 border-b border-slate-100 bg-slate-50">
-                <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
-                  <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                  </svg>
-                  Analysis
-                </h3>
-              </div>
-              <div className="p-4 space-y-4">
-                {/* Strengths */}
-                {aiData?.strengths && aiData.strengths.length > 0 && (
-                  <div className="bg-green-50 rounded-lg p-3 border border-green-100">
-                    <p className="text-xs font-semibold text-green-700 mb-2 flex items-center gap-1">
-                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"/>
-                      </svg>
-                      Strengths
-                    </p>
-                    <ul className="space-y-1">
-                      {aiData.strengths.slice(0, 3).map((strength, idx) => (
-                        <li key={idx} className="text-xs text-green-600">• {strength}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                
-                {/* Improvements */}
-                {aiData?.weaknesses && aiData.weaknesses.length > 0 && (
-                  <div className="bg-amber-50 rounded-lg p-3 border border-amber-100">
-                    <p className="text-xs font-semibold text-amber-700 mb-2 flex items-center gap-1">
-                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                      </svg>
-                      Improvements
-                    </p>
-                    <ul className="space-y-1">
-                      {aiData.weaknesses.slice(0, 3).map((weakness, idx) => (
-                        <li key={idx} className="text-xs text-amber-600">• {weakness}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                
-                {/* Loading State */}
-                {isAnalyzing && !aiData && (
-                  <div className="flex items-center justify-center py-4">
-                    <svg className="w-5 h-5 animate-spin text-slate-400" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
-                    </svg>
-                    <span className="ml-2 text-xs text-slate-500">Analyzing...</span>
-                  </div>
-                )}
-                
-                {/* No Data State */}
-                {!isAnalyzing && !aiData && (
-                  <p className="text-xs text-slate-400 text-center py-2">
-                    AI analysis will appear here
-                  </p>
-                )}
-              </div>
-            </div>
+            {/* 2. Keyword Assistant */}
+            <KeywordAssistant 
+              resumeJson={resumeJson} 
+              onAddKeyword={handleAddKeyword} 
+            />
+
+            {/* 3. Popular Templates */}
+            <TemplateSelector />
 
             {/* JSON Preview Card - Collapsed */}
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">

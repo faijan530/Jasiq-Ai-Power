@@ -98,24 +98,12 @@ export function ResumeSectionsSidebar({
   const progress = Math.round((completedCount / sections.length) * 100);
 
   return (
-    <div className="bg-white rounded-xl shadow-md p-4 space-y-2 h-full flex flex-col">
-      <h3 className="font-semibold text-gray-700 mb-2 px-2">
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 space-y-2 h-full flex flex-col transition-all hover:shadow-md">
+      <h3 className="font-bold text-[15px] text-gray-900 mb-2 px-2">
         Resume Sections
       </h3>
 
-      {/* Progress Bar */}
-      <div className="px-2 mb-3">
-        <div className="flex justify-between text-xs text-gray-500 mb-1">
-          <span>{completedCount}/{sections.length} completed</span>
-          <span>{progress}%</span>
-        </div>
-        <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
-          <div
-            className="bg-gradient-to-r from-blue-500 to-blue-600 h-full rounded-full transition-all duration-500"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-      </div>
+      {/* Sections List */}
 
       <nav className="flex-1 space-y-1">
         {sections.map((section) => {
@@ -129,17 +117,17 @@ export function ResumeSectionsSidebar({
               key={section.key}
               onClick={() => onSectionChange(section.key)}
               className={[
-                "w-full flex justify-between items-center px-3 py-3 rounded-lg transition-all duration-200 group text-sm hover:shadow-sm hover:scale-[1.01]",
+                "w-full flex justify-between items-center px-4 py-3 rounded-xl transition-all duration-200 group text-sm",
                 isActive
-                  ? "bg-blue-50 text-blue-600 font-medium shadow-sm"
-                  : "text-gray-600 hover:bg-blue-50 hover:text-blue-600",
+                  ? "bg-[#1a56db] text-white shadow-md shadow-blue-900/20"
+                  : "text-gray-600 hover:bg-[#F0F4F8] hover:text-[#1a56db]",
                 hasError && !isActive ? "ring-1 ring-red-300 bg-red-50/50" : "",
                 isComplete && !isActive ? "bg-green-50/50" : "",
               ].join(" ")}
             >
               <div className="flex items-center gap-3">
-                <Icon className={["w-4 h-4", isActive ? "text-blue-500" : "text-gray-400 group-hover:text-blue-500"].join(" ")} />
-                <span className="text-left">{section.label}</span>
+                <Icon className={["w-4 h-4", isActive ? "text-white" : "text-gray-400 group-hover:text-[#1a56db]"].join(" ")} />
+                <span className="text-left font-medium">{section.label}</span>
               </div>
               <div className="flex items-center gap-1">
                 {/* Status Indicator */}
@@ -153,7 +141,7 @@ export function ResumeSectionsSidebar({
                     <WarningIcon className="w-4 h-4" />
                   </span>
                 )}
-                <span className={["text-gray-400 transition-transform duration-200", isActive ? "rotate-90 text-blue-500" : ""].join(" ")}>
+                <span className={["transition-transform duration-200", isActive ? "text-white opacity-80" : "text-gray-400"].join(" ")}>
                   <ChevronRightIcon className="w-4 h-4" />
                 </span>
               </div>
@@ -162,9 +150,22 @@ export function ResumeSectionsSidebar({
         })}
       </nav>
 
-      <div className="mt-auto pt-4 border-t border-gray-100">
-        <div className="text-xs text-gray-400 text-center">
-          {sections.length} sections available
+      <div className="mt-6 pt-4">
+        <div className="bg-[#F0F4F8] rounded-xl p-4 border border-blue-100/50">
+          <div className="w-full h-24 bg-white rounded-lg mb-3 flex items-center justify-center border border-blue-50 shadow-sm relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-50/50"></div>
+            <span className="text-4xl relative z-10 drop-shadow-sm">💡</span>
+          </div>
+          <h4 className="font-bold text-gray-900 text-sm mb-1">Tips & Suggestions</h4>
+          <p className="text-[11px] text-gray-500 leading-relaxed mb-3">
+            Learn how to write an effective resume with our expert tips.
+          </p>
+          <button 
+            onClick={() => window.open('https://www.linkedin.com/pulse/how-write-resume-gets-you-hired-linkedin', '_blank')}
+            className="w-full py-2 bg-[#1a56db] text-white text-[12px] font-bold rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-1 shadow-sm"
+          >
+            Learn More <ChevronRightIcon className="w-3 h-3" />
+          </button>
         </div>
       </div>
     </div>

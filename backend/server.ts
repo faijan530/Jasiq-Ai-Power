@@ -5,6 +5,7 @@ import { resumeRouter } from "./modules/resume/controller/resume.controller";
 import { atsRouter } from "./modules/ats/controller/ats.controller";
 import { jdMatchRouter } from "./modules/jd-match/controller/jd-match.controller";
 import { authRouter } from "./modules/auth/controller/auth.controller";
+import { jobRouter } from "./modules/job-engine/controller/job.router";
 import { devAuthMiddleware } from "./middleware/devAuth";
 import { jwtAuthMiddleware } from "./modules/auth/middleware/auth.middleware";
 import { prisma } from "./lib/prisma";
@@ -50,6 +51,9 @@ app.use("/ats", jwtAuthMiddleware, atsRouter);
 
 // Apply JWT middleware to jd-match routes for proper user context
 app.use("/jd-match", jwtAuthMiddleware, jdMatchRouter);
+
+// Apply JWT middleware to job-engine routes for proper user context
+app.use("/jobs", jwtAuthMiddleware, jobRouter);
 
 const port = process.env.PORT ? Number(process.env.PORT) : 4000;
 

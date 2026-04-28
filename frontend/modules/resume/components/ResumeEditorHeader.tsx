@@ -37,32 +37,29 @@ export function ResumeEditorHeader({
     "Professional";
 
   return (
-    <div className="bg-white rounded-xl shadow-md border border-slate-200 p-4 mb-6">
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-5 transition-all hover:shadow-md">
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-        {/* Left: Avatar + Title + Role */}
-        <div className="flex items-center gap-4">
-          {/* Avatar */}
-          <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 text-white flex items-center justify-center rounded-full font-bold text-lg shadow-md flex-shrink-0">
-            {initials}
+        {/* Left: Title Input */}
+        <div className="flex-1 min-w-0 pr-4">
+          <div className="flex items-center gap-2 mb-1">
+            <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+            </svg>
+            <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Document Name</span>
           </div>
-          
-          {/* Title + Role */}
-          <div className="flex-1 min-w-0">
-            {canEdit ? (
-              <input
-                type="text"
-                value={resumeTitle}
-                onChange={(e) => setResumeTitle(e.target.value)}
-                className="w-full text-lg font-semibold text-slate-900 bg-transparent border-b border-transparent hover:border-slate-300 focus:border-blue-500 focus:outline-none transition-colors px-0 py-0.5"
-                placeholder="Resume Title"
-              />
-            ) : (
-              <h1 className="text-lg font-semibold text-slate-900 truncate">
-                {resumeTitle || "Untitled Resume"}
-              </h1>
-            )}
-            <p className="text-sm text-slate-500 truncate">{role}</p>
-          </div>
+          {canEdit ? (
+            <input
+              type="text"
+              value={resumeTitle}
+              onChange={(e) => setResumeTitle(e.target.value)}
+              className="w-full text-xl font-bold text-gray-900 bg-transparent border-b-2 border-transparent hover:border-gray-200 focus:border-[#1a56db] focus:outline-none transition-colors px-0 py-0.5"
+              placeholder="Enter Resume Title..."
+            />
+          ) : (
+            <h1 className="text-xl font-bold text-gray-900 truncate">
+              {resumeTitle || "Untitled Resume"}
+            </h1>
+          )}
         </div>
 
         {/* Right: Action Buttons */}
@@ -71,7 +68,7 @@ export function ResumeEditorHeader({
           <button
             onClick={onAiImprove}
             disabled={isAiImproving || !canEdit}
-            className="inline-flex items-center gap-1.5 px-3 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-sm font-medium rounded-lg shadow-sm hover:shadow-md transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-50 text-indigo-700 text-sm font-semibold rounded-xl border border-indigo-100 hover:bg-indigo-100 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {isAiImproving ? (
               <>
@@ -95,7 +92,7 @@ export function ResumeEditorHeader({
           <button
             onClick={onSave}
             disabled={!canEdit || isSaving}
-            className="inline-flex items-center gap-1.5 px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg shadow-sm hover:bg-blue-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#1a56db] text-white text-sm font-semibold rounded-xl shadow-sm hover:bg-blue-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {isSaving ? (
               <>
@@ -118,7 +115,7 @@ export function ResumeEditorHeader({
           {/* Export PDF Button */}
           <button
             onClick={onExportPdf}
-            className="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-100 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-200 transition-colors"
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-white text-gray-700 text-sm font-semibold rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>

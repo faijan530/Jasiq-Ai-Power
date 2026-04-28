@@ -46,17 +46,17 @@ export function JDMatchPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50/50">
+    <div className="min-h-screen bg-[#F3F2EF]">
       {/* Header */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
-                <Target className="w-5 h-5 text-white" />
+              <div className="w-10 h-10 bg-[#e8f3ff] rounded-md flex items-center justify-center">
+                <Target className="w-5 h-5 text-[#0a66c2]" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">JD Match</h1>
+                <h1 className="text-lg font-semibold text-gray-900">JD Match</h1>
                 <p className="text-xs text-gray-500">Compare your resume against job descriptions</p>
               </div>
             </div>
@@ -139,12 +139,12 @@ export function JDMatchPage() {
 
         {/* Empty State */}
         {!data && !loading && !error && (
-          <div className="mt-12 text-center">
-            <div className="w-24 h-24 bg-gradient-to-br from-blue-100 to-purple-100 rounded-3xl flex items-center justify-center mx-auto mb-4">
-              <Target className="w-12 h-12 text-blue-600" />
+          <div className="mt-12 text-center bg-white p-12 rounded-lg shadow-sm border border-gray-200 max-w-3xl mx-auto">
+            <div className="w-20 h-20 bg-[#e8f3ff] rounded-full flex items-center justify-center mx-auto mb-6">
+              <Target className="w-10 h-10 text-[#0a66c2]" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-800">Ready to Analyze</h3>
-            <p className="mt-2 text-gray-500 max-w-md mx-auto">
+            <h3 className="text-lg font-semibold text-gray-900">Ready to Analyze</h3>
+            <p className="mt-2 text-sm text-gray-600 max-w-md mx-auto">
               Select your resume and paste a job description above to see how well your profile matches the role.
             </p>
           </div>

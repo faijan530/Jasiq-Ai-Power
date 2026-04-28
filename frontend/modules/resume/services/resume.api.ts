@@ -130,12 +130,13 @@ export const getResumeVersion = async (
 
 export const renderResumePdf = async (
   resumeId: string,
+  template: string = "modern",
   requestId?: string
 ): Promise<ApiEnvelope<RenderPdfResponseDto>> => {
   return unwrap<RenderPdfResponseDto>(
     http.post(
       `/resume/${encodeURIComponent(resumeId)}/pdf`,
-      {},
+      { template },
       requestId ? { headers: { "x-request-id": requestId } } : undefined
     )
   );

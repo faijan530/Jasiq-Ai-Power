@@ -97,10 +97,10 @@ export function ResumeEditorPage({ currentUser }: { currentUser: CurrentUser }) 
 
   if (!resumeId) {
     return (
-      <div className="min-h-screen bg-slate-50 p-4">
-        <div className="mt-10 text-center text-gray-500">
+      <div className="min-h-screen bg-[#F3F2EF] p-6">
+        <div className="mt-10 text-center text-gray-500 bg-white p-8 rounded-lg shadow-sm border border-gray-200 max-w-md mx-auto">
           <p>No resume loaded</p>
-          <Link to="/app/resume" className="mt-3 inline-block text-sm font-semibold text-blue-600 hover:text-blue-700">
+          <Link to="/app/resume" className="mt-4 inline-flex items-center gap-2 px-5 py-2 bg-[#0a66c2] text-white rounded-full text-sm font-semibold hover:bg-[#004182] transition-colors">
             Back to resumes
           </Link>
         </div>
@@ -112,13 +112,23 @@ export function ResumeEditorPage({ currentUser }: { currentUser: CurrentUser }) 
     return <Navigate to={`/app/resume/${resumeId}`} replace />;
   }
 
+  if (resumeQuery && resumeQuery.tenantId !== currentUser.tenantId) {
+    return (
+      <div className="min-h-screen bg-[#F3F2EF] p-6">
+        <div className="mx-auto max-w-7xl rounded-lg border border-red-200 bg-red-50 p-6 text-sm text-red-800 shadow-sm text-center mt-10">
+          Tenant mismatch. You are not allowed to view this resume.
+        </div>
+      </div>
+    );
+  }
+
   // Show loading while data is being fetched
   if (isResumeLoading || (!resumeQuery && !isError)) {
     return (
-      <div className="min-h-screen bg-slate-50 p-4">
+      <div className="min-h-screen bg-[#F3F2EF] p-6">
         <div className="mx-auto max-w-7xl">
           {/* Skeleton Header */}
-          <div className="bg-white rounded-xl p-6 shadow-md mb-4">
+          <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 mb-6">
             <div className="flex items-center justify-between">
               <div className="space-y-2">
                 <div className="h-6 w-48 bg-gray-200 rounded animate-pulse"></div>
@@ -127,30 +137,34 @@ export function ResumeEditorPage({ currentUser }: { currentUser: CurrentUser }) 
               <div className="h-10 w-40 bg-purple-200 rounded-xl animate-pulse"></div>
             </div>
           </div>
-          {/* Skeleton Content */}
-          <div className="grid grid-cols-12 gap-4">
-            <div className="col-span-3">
-              <div className="bg-white rounded-xl p-4 shadow-md h-96">
-                <div className="h-4 w-32 bg-gray-200 rounded mb-4 animate-pulse"></div>
-                <div className="space-y-3">
-                  {[1,2,3,4,5,6,7].map(i => (
-                    <div key={i} className="h-10 bg-gray-100 rounded-lg animate-pulse"></div>
-                  ))}
+          {/* Skeleton Body */}
+          <div className="grid grid-cols-12 gap-6">
+            <div className="col-span-12 lg:col-span-3">
+              <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200 h-96">
+                <div className="h-6 w-32 bg-gray-200 rounded animate-pulse mb-6"></div>
+                <div className="space-y-4">
+                  <div className="h-4 w-full bg-gray-100 rounded animate-pulse"></div>
+                  <div className="h-4 w-3/4 bg-gray-100 rounded animate-pulse"></div>
+                  <div className="h-4 w-5/6 bg-gray-100 rounded animate-pulse"></div>
                 </div>
               </div>
             </div>
-            <div className="col-span-6">
-              <div className="bg-white rounded-xl p-4 shadow-md h-96 space-y-4">
-                <div className="h-20 bg-gradient-to-r from-blue-100 to-blue-200 rounded-xl animate-pulse"></div>
-                <div className="h-24 bg-gray-100 rounded-xl animate-pulse"></div>
-                <div className="h-40 bg-gray-100 rounded-xl animate-pulse"></div>
+            <div className="col-span-12 lg:col-span-6">
+              <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 min-h-[600px]">
+                <div className="h-8 w-48 bg-gray-200 rounded animate-pulse mb-8"></div>
+                <div className="space-y-6">
+                  <div className="h-12 w-full bg-gray-100 rounded animate-pulse"></div>
+                  <div className="h-32 w-full bg-gray-100 rounded animate-pulse"></div>
+                </div>
               </div>
             </div>
-            <div className="col-span-3">
-              <div className="bg-white rounded-xl p-4 shadow-md h-96 space-y-3">
-                <div className="h-32 bg-purple-50 rounded-xl animate-pulse"></div>
-                <div className="h-24 bg-gray-100 rounded-xl animate-pulse"></div>
-                <div className="h-24 bg-gray-100 rounded-xl animate-pulse"></div>
+            <div className="col-span-12 lg:col-span-3">
+              <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200 h-96">
+                <div className="h-6 w-32 bg-gray-200 rounded animate-pulse mb-6"></div>
+                <div className="space-y-4">
+                  <div className="h-4 w-full bg-gray-100 rounded animate-pulse"></div>
+                  <div className="h-4 w-full bg-gray-100 rounded animate-pulse"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -159,11 +173,16 @@ export function ResumeEditorPage({ currentUser }: { currentUser: CurrentUser }) 
     );
   }
 
-  if (resumeQuery && resumeQuery.tenantId !== currentUser.tenantId) {
+  // Handle errors
+  if (isError || !resumeQuery) {
     return (
-      <div className="min-h-screen bg-slate-50 p-4">
-        <div className="mx-auto max-w-7xl rounded-xl border border-red-200 bg-red-50 p-6 text-sm text-red-800 shadow-md">
-          Tenant mismatch. You are not allowed to view this resume.
+      <div className="min-h-screen bg-[#F3F2EF] p-6">
+        <div className="mx-auto max-w-3xl mt-10 p-6 bg-red-50 border border-red-200 rounded-lg shadow-sm text-center">
+          <h2 className="text-xl font-bold text-red-700 mb-2">Error Loading Resume</h2>
+          <p className="text-red-600 mb-6">{error instanceof Error ? error.message : "Resume not found"}</p>
+          <Link to="/app/resume" className="inline-flex items-center justify-center px-6 py-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors">
+            Return to Dashboard
+          </Link>
         </div>
       </div>
     );

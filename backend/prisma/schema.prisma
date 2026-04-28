@@ -104,4 +104,25 @@ model JdMatchReport {
   @@index([createdAt], map: "idx_jd_match_created")
 }
 
+model Job {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId        String?   @map("tenant_id") @db.Uuid
+  title           String    @db.VarChar
+  company         String    @db.VarChar
+  location        String?   @db.VarChar
+  employmentType  String?   @map("employment_type") @db.VarChar
+  skillsRequired  Json?     @map("skills_required")
+  minExperience   Int?      @map("min_experience")
+  maxExperience   Int?      @map("max_experience")
+  jdText          String    @map("jd_text") @db.Text
+  source          String?   @db.VarChar
+  applyLink       String?   @map("apply_link") @db.VarChar
+  postedAt        DateTime? @map("posted_at") @db.Timestamp(6)
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt       DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
 
+  @@map("jobs")
+  @@index([title], map: "idx_jobs_title")
+  @@index([location], map: "idx_jobs_location")
+  @@index([tenantId], map: "idx_jobs_tenant")
+}

@@ -189,7 +189,7 @@ export default function ATSAnalyzerPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#F3F2EF]">
       {/* Header Section */}
       <div className="bg-white border-b border-gray-200 px-6 py-4">
         <div className="max-w-7xl mx-auto">
@@ -248,7 +248,7 @@ export default function ATSAnalyzerPage() {
               <button
                 onClick={handleAnalyze}
                 disabled={isEvaluating || !selectedResumeId || !latestVersionId}
-                className="flex items-center gap-2 px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 px-5 py-2 bg-[#0a66c2] hover:bg-[#004182] text-white font-semibold rounded-full transition-colors disabled:opacity-50 shadow-sm"
               >
                 {isEvaluating ? (
                   <>
@@ -299,10 +299,10 @@ export default function ATSAnalyzerPage() {
                   sectionScores={atsReport.sectionScores}
                 />
               ) : (
-                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 text-center">
-                  <BarChart3 className="w-12 h-12 mx-auto text-gray-300 mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-800 mb-2">Ready to Analyze</h3>
-                  <p className="text-gray-600">Click the Analyze button to get your ATS score and recommendations.</p>
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
+                  <BarChart3 className="w-12 h-12 mx-auto text-gray-400 mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Ready to Analyze</h3>
+                  <p className="text-gray-500">Click the Analyze button to get your ATS score and recommendations.</p>
                 </div>
               )}
 
@@ -316,9 +316,9 @@ export default function ATSAnalyzerPage() {
                   education={previewData.education}
                 />
               ) : (
-                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 text-center">
-                  <Loader2 className="w-8 h-8 animate-spin mx-auto text-gray-300 mb-4" />
-                  <p className="text-gray-600">Loading resume details...</p>
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
+                  <Loader2 className="w-8 h-8 animate-spin mx-auto text-gray-400 mb-4" />
+                  <p className="text-gray-500">Loading resume details...</p>
                 </div>
               )}
 
@@ -337,26 +337,26 @@ export default function ATSAnalyzerPage() {
 
               {/* Chat Panel */}
               {showChatPanel && (
-                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-                  <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-3 flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-white">
-                      <MessageSquare className="w-5 h-5" />
-                      <span className="font-semibold">ATS Assistant</span>
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                  <div className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-gray-900">
+                      <MessageSquare className="w-5 h-5 text-[#0a66c2]" />
+                      <span className="font-semibold text-sm">ATS Assistant</span>
                     </div>
                     <button 
                       onClick={() => setShowChatPanel(false)}
-                      className="text-white/80 hover:text-white"
+                      className="text-gray-400 hover:text-gray-600"
                     >
                       <X className="w-5 h-5" />
                     </button>
                   </div>
-                  <div className="h-64 overflow-y-auto p-4 space-y-3">
+                  <div className="h-64 overflow-y-auto p-4 space-y-3 bg-[#F3F2EF]">
                     {chatMessages.map((msg, i) => (
                       <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                        <div className={`max-w-[80%] px-3 py-2 rounded-lg text-sm ${
+                        <div className={`max-w-[85%] px-3 py-2 rounded-lg text-sm border ${
                           msg.role === "user" 
-                            ? "bg-blue-600 text-white" 
-                            : "bg-gray-100 text-gray-800"
+                            ? "bg-white text-gray-900 border-gray-200" 
+                            : "bg-[#e8f3ff] text-gray-900 border-blue-100"
                         }`}>
                           {msg.content}
                         </div>
@@ -394,11 +394,11 @@ export default function ATSAnalyzerPage() {
 
               {/* Optimize Panel */}
               {showOptimizePanel && (
-                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
-                  <div className="flex items-center justify-between mb-4">
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                  <div className="flex items-center justify-between mb-4 border-b border-gray-100 pb-3">
                     <div className="flex items-center gap-2">
-                      <Sparkles className="w-5 h-5 text-purple-600" />
-                      <h3 className="font-semibold text-gray-800">AI Optimize</h3>
+                      <Sparkles className="w-5 h-5 text-[#0a66c2]" />
+                      <h3 className="font-semibold text-gray-900">AI Optimize</h3>
                     </div>
                     <button onClick={() => setShowOptimizePanel(false)}>
                       <X className="w-5 h-5 text-gray-400 hover:text-gray-600" />
@@ -411,7 +411,7 @@ export default function ATSAnalyzerPage() {
                     <div className="space-y-3">
                       <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
                         <div 
-                          className="h-full bg-purple-500 transition-all duration-300"
+                          className="h-full bg-[#0a66c2] transition-all duration-300"
                           style={{ width: `${optimizationProgress}%` }}
                         />
                       </div>
@@ -422,7 +422,7 @@ export default function ATSAnalyzerPage() {
                   ) : (
                     <button 
                       onClick={handleOptimize}
-                      className="w-full py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                      className="w-full py-2 bg-[#0a66c2] text-white font-semibold rounded-full hover:bg-[#004182] transition-colors"
                     >
                       Start Optimization
                     </button>

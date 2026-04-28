@@ -18,9 +18,11 @@ export interface ResumeStoreState {
   currentVersion: ResumeVersionDto | null;
   loading: boolean;
   error: ResumeStoreError | null;
+  selectedTemplate: string;
 
   setResume: (resume: ResumeModel | null, currentVersion?: ResumeVersionDto | null) => void;
   updateField: (path: string, value: unknown) => void;
+  setTemplate: (template: string) => void;
   resetResume: () => void;
   hydrateFromAPI: (resumeId: string) => Promise<void>;
 }
@@ -49,6 +51,9 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
   currentVersion: null,
   loading: false,
   error: null,
+  selectedTemplate: "modern",
+
+  setTemplate: (template) => set(() => ({ selectedTemplate: template })),
 
   setResume: (resume, currentVersion = null) =>
     set(() => ({

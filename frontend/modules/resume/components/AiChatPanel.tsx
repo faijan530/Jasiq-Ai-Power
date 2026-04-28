@@ -175,9 +175,9 @@ export function AiChatPanel({ resumeJson, onResumeUpdate, onTitleUpdate, resumeI
   ];
 
   return (
-    <div className="bg-white rounded-xl shadow-md p-4 flex flex-col h-full max-h-[500px]">
+    <div className="flex flex-col h-full max-h-[500px]">
       <h3 className="font-semibold text-gray-700 flex items-center gap-2 mb-3">
-        <BotIcon className="w-5 h-5 text-purple-500" />
+        <BotIcon className="w-5 h-5 text-[#1a56db]" />
         AI Chat Assistant
       </h3>
 
@@ -193,18 +193,18 @@ export function AiChatPanel({ resumeJson, onResumeUpdate, onTitleUpdate, resumeI
           >
             <div
               className={[
-                "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0",
-                msg.role === "user" ? "bg-blue-100 text-blue-600" : "bg-purple-100 text-purple-600",
+                "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm",
+                msg.role === "user" ? "bg-[#1a56db] text-white" : "bg-white border border-gray-200 text-[#1a56db]",
               ].join(" ")}
             >
               {msg.role === "user" ? <UserIcon className="w-4 h-4" /> : <BotIcon className="w-4 h-4" />}
             </div>
             <div
               className={[
-                "max-w-[80%] p-3 rounded-xl text-sm",
+                "max-w-[80%] p-3 rounded-xl text-[13px] shadow-sm font-medium",
                 msg.role === "user"
-                  ? "bg-blue-500 text-white rounded-br-none"
-                  : "bg-gray-100 text-gray-800 rounded-bl-none",
+                  ? "bg-[#1a56db] text-white rounded-br-none"
+                  : "bg-[#F0F4F8] text-gray-800 rounded-bl-none border border-gray-100",
               ].join(" ")}
             >
               {msg.content}
@@ -213,10 +213,10 @@ export function AiChatPanel({ resumeJson, onResumeUpdate, onTitleUpdate, resumeI
         ))}
         {isPending && (
           <div className="flex gap-2 animate-pulse">
-            <div className="w-7 h-7 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center">
-              <BotIcon className="w-3.5 h-3.5" />
+            <div className="w-8 h-8 rounded-full bg-white border border-gray-200 text-[#1a56db] flex items-center justify-center shadow-sm">
+              <BotIcon className="w-4 h-4" />
             </div>
-            <div className="bg-gray-100 px-3 py-2 rounded-xl rounded-bl-none flex items-center gap-2">
+            <div className="bg-[#F0F4F8] border border-gray-100 px-3 py-2 rounded-xl rounded-bl-none flex items-center gap-2 shadow-sm">
               <span className="text-xs text-gray-500">AI typing...</span>
               <span className="flex gap-0.5">
                 <span className="w-1 h-1 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
@@ -239,7 +239,7 @@ export function AiChatPanel({ resumeJson, onResumeUpdate, onTitleUpdate, resumeI
                 setMessage(action);
                 sendMessage(action);
               }}
-              className="text-xs bg-gray-100 hover:bg-blue-100 text-gray-600 hover:text-blue-600 px-3 py-1.5 rounded-full transition-all duration-200"
+              className="text-[11px] font-medium bg-[#F0F4F8] border border-gray-100 hover:bg-[#1a56db] hover:text-white text-gray-600 px-3 py-1.5 rounded-full transition-all duration-200"
             >
               {action}
             </button>
@@ -255,17 +255,17 @@ export function AiChatPanel({ resumeJson, onResumeUpdate, onTitleUpdate, resumeI
           onChange={(e) => setMessage(e.target.value)}
           onKeyPress={handleKeyPress}
           placeholder="Ask AI to help with your resume..."
-          className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+          className="flex-1 bg-[#F0F4F8] border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:outline-none focus:border-[#1a56db] focus:ring-1 focus:ring-[#1a56db] transition-all"
           disabled={isPending}
         />
         <button
           onClick={handleSend}
           disabled={!message.trim() || isPending}
           className={[
-            "bg-blue-500 text-white px-4 py-2 rounded-xl transition-all duration-200 flex items-center gap-1",
+            "bg-[#1a56db] text-white px-4 py-2 rounded-xl transition-all duration-200 flex items-center gap-1 shadow-sm",
             !message.trim() || isPending
               ? "opacity-50 cursor-not-allowed"
-              : "hover:bg-blue-600 hover:shadow-md hover:scale-[1.02]",
+              : "hover:bg-blue-700 hover:shadow-md hover:scale-[1.02]",
           ].join(" ")}
         >
           {isPending ? <LoaderIcon className="w-4 h-4" /> : <SendIcon className="w-4 h-4" />}

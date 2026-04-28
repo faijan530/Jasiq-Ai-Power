@@ -16,6 +16,15 @@ import { AdminResumeDetailPage } from "./pages/admin/AdminResumeDetailPage";
 import { AdminStudentsPage } from "./pages/admin/AdminStudentsPage";
 import { AdminUsersPage } from "./pages/admin/AdminUsersPage";
 
+// Job Engine pages
+import { JobFeedPage } from "../modules/job-engine/pages/JobFeedPage";
+import { JobDetailPage } from "../modules/job-engine/pages/JobDetailPage";
+import { JobSearchPage } from "../modules/job-engine/pages/JobSearchPage";
+import { JobRecommendationsPage } from "../modules/job-engine/pages/JobRecommendationsPage";
+import { JobAdminListPage } from "../modules/job-engine/pages/JobAdminListPage";
+import { JobAdminCreatePage } from "../modules/job-engine/pages/JobAdminCreatePage";
+import { JobAdminEditPage } from "../modules/job-engine/pages/JobAdminEditPage";
+
 // Fallback user from env for development
 function currentUserFromEnv(): CurrentUser {
   const id = String(import.meta.env.VITE_USER_ID ?? "").trim();
@@ -39,21 +48,23 @@ function Navigation() {
   if (isAppRoute) return null;
 
   return (
-    <nav className="bg-white border-b border-slate-200 px-4 py-3">
+    <nav className="bg-white border-b border-gray-200 px-4 py-3">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <Link to="/" className="font-semibold text-slate-800">Jasiq AI</Link>
+        <Link to="/" className="font-bold text-2xl tracking-tight text-[#0a66c2]">
+          JASIQ <span className="text-sm font-normal text-gray-500">AI</span>
+        </Link>
         <div className="flex items-center gap-4">
           {!isAuthenticated ? (
             <div className="flex gap-2">
               <Link
                 to="/login"
-                className="px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-md transition-colors"
+                className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
               >
                 Sign In
               </Link>
               <Link
                 to="/signup"
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors"
+                className="px-5 py-2 text-sm font-semibold text-[#0a66c2] hover:bg-[#e8f3ff] border border-[#0a66c2] rounded-full transition-colors"
               >
                 Sign Up
               </Link>
@@ -61,7 +72,7 @@ function Navigation() {
           ) : (
             <Link
               to="/app/resume"
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors"
+              className="px-5 py-2 text-sm font-semibold text-white bg-[#0a66c2] hover:bg-[#004182] rounded-full transition-colors shadow-sm"
             >
               Dashboard
             </Link>
@@ -128,9 +139,9 @@ export default function App() {
   const jdMatchRoutes = getJDMatchRoutes();
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
+    <div className="min-h-screen bg-[#F3F2EF] text-gray-900">
       <Navigation />
-      <Suspense fallback={<div className="p-6 text-sm text-slate-600">Loading...</div>}>
+      <Suspense fallback={<div className="p-6 text-sm text-gray-500">Loading...</div>}>
         <Routes>
           {/* Auth Routes (public) */}
           {authRoutes.map((route) => (
@@ -148,6 +159,11 @@ export default function App() {
             {getATSRoutes().map((route) => (
               <Route key={route.path} path={route.path} element={route.element} />
             ))}
+            {/* Job Engine Routes */}
+            <Route path="/app/jobs" element={<JobFeedPage />} />
+            <Route path="/app/jobs/:jobId" element={<JobDetailPage />} />
+            <Route path="/app/jobs/search" element={<JobSearchPage />} />
+            <Route path="/app/jobs/recommendations" element={<JobRecommendationsPage />} />
           </Route>
           
           {/* Protected Admin Routes */}
@@ -157,6 +173,10 @@ export default function App() {
             <Route path="/admin/resumes/:resumeId" element={<AdminResumeDetailPage />} />
             <Route path="/admin/students" element={<AdminStudentsPage />} />
             <Route path="/admin/users" element={<AdminUsersPage />} />
+            {/* Job Engine Admin Routes */}
+            <Route path="/admin/jobs" element={<JobAdminListPage />} />
+            <Route path="/admin/jobs/create" element={<JobAdminCreatePage />} />
+            <Route path="/admin/jobs/:jobId/edit" element={<JobAdminEditPage />} />
           </Route>
           
           {/* Default redirect */}

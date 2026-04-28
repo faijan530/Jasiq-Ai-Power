@@ -218,7 +218,7 @@ export class ResumeService {
     };
   }
 
-  async generatePdf(id: string, context: RequestContext) {
+  async generatePdf(id: string, context: RequestContext, templateId: string = "modern") {
     const resume = await this.resumeRepo.findById(id);
     if (!resume) {
       throw new ForbiddenError("Access to resume denied");
@@ -231,7 +231,7 @@ export class ResumeService {
       throw new ForbiddenError("Access to resume denied");
     }
 
-    const { html } = this.pdfService.renderPdf(latest);
+    const { html } = this.pdfService.renderPdf(latest, templateId);
     const pdfUrl = this.pdfService.getPdfUrl(resume.id, latest.versionNumber);
     const event = this.pdfService.emitPdfGeneratedEvent(resume.id, latest.versionNumber, resume.tenantId);
 

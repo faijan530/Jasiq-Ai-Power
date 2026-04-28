@@ -260,7 +260,8 @@ resumeRouter.post("/:id/ai/analyze", async (req: AuthenticatedRequest, res: Resp
 resumeRouter.post("/:id/pdf", async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   try {
     const context = buildContext(req);
-    const result = await resumeService.generatePdf(req.params.id, context);
+    const template = req.body?.template || "modern";
+    const result = await resumeService.generatePdf(req.params.id, context, template);
     return successResponse(res, result);
   } catch (error) {
     console.error("Resume error", { error: error instanceof Error ? error.message : String(error) });
